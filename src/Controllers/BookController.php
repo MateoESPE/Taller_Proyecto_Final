@@ -84,7 +84,7 @@ class BookController
             echo json_encode(['success' => $this->bookRepository->update($existing)]);
             return;
         }
-
+        
         if ($method === 'DELETE') {
             echo json_encode(['success' => $this->bookRepository->delete((int) ($payload['id'] ?? 0))]);
             return;
@@ -93,7 +93,6 @@ class BookController
         http_response_code(405);
         echo json_encode(['error' => 'Method Not Allowed']);
     }
-
     public function bookToArray(Book $book): array
     {
         return [

@@ -12,7 +12,7 @@ class Article extends Publication
     private string $area;
 
     public function __construct(
-        int $id,
+        ?int $id,
         string $title,
         string $description,
         \DateTime $publicationDate,

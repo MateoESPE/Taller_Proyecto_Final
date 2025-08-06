@@ -4,8 +4,8 @@ namespace App\Repositories;
 
 use App\Interfaces\RepositoryInterface;
 use App\Config\Database;
-use App\Entites\Article;
-use App\Entites\Author;
+use App\Entities\Article;
+use App\Entities\Author;
 use PDO;
 
 class ArticleRepository implements RepositoryInterface {

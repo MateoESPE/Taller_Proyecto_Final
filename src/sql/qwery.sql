@@ -257,12 +257,17 @@ BEGIN
         a.`publication_id`,
         p.id,
         p.`title`,
+        p.`description`,
         p.`publication_date`,
         p.`type`,
         p.author_id,
-        au.id,
+        au.id AS author_id,
         au.first_name,
-        au.last_name
+        au.last_name,
+        au.username,
+        au.email,
+        au.orcid,
+        au.affiliation
     FROM article a
         JOIN publication p ON a.publication_id = p.id
         JOIN author au ON p.author_id = au.id
