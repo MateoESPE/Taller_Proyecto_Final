@@ -8,7 +8,8 @@ use App\Entities\Article;
 use App\Entities\Author;
 use PDO;
 
-class ArticleRepository implements RepositoryInterface {
+class ArticleRepository implements RepositoryInterface
+{
     private PDO $db;
     private AuthorRepository $authorRepo;
 
@@ -28,90 +29,102 @@ class ArticleRepository implements RepositoryInterface {
         foreach ($rows as $r) {
             $out[] = $this->hydrate($r);
         }
-
         return $out;
     }
 
     public function create(object $entity): bool
     {
-        if (!$entity instanceof Article) {
+        if (!$entity instanceof Article) 
+        {
             throw new \InvalidArgumentException("Article expected");
         }
 
-        $stmt = $this->db->prepare("CALL sp_create_article(?, ?, ?, ?, ?, ?, ?, ?);");
-        $stmt->bindValue(1, $entity->getTitle());
-        $stmt->bindValue(2, $entity->getDescription());
-        $stmt->bindValue(3, $entity->getPublicationDate()->format('Y-m-d'));
-        $stmt->bindValue(4, $entity->getAuthor()->getId());
-        $stmt->bindValue(5, $entity->getDoi());
-        $stmt->bindValue(6, $entity->getAbstract());
-        $stmt->bindValue(7, $entity->getKeywords());
-        $stmt->bindValue(8, $entity->getIndexation());
+        $stmt = $this->db->prepare("CALL sp_create_article(:title, :description, :publicationDate, :authorId, :doi, :abstract, :keywords, :indexation, :magazine, :area);");
+        $ok = $stmt->execute([
+            ':title'           => $entity->getTitle(),
+            ':description'     => $entity->getDescription(),
+            ':publicationDate' => $entity->getPublicationDate()->format('Y-m-d'),
+            ':authorId'        => $entity->getAuthor()->getId(),
+            ':doi'             => $entity->getDoi(),
+            ':abstract'        => $entity->getAbstract(),
+            ':keywords'        => $entity->getKeywords(),
+            ':indexation'      => $entity->getIndexation(),
+            ':magazine'        => $entity->getMagazine(),
+            ':area'            => $entity->getArea()
+        ]);
 
-        $result = $stmt->execute();
+        if ($ok) {
+            $stmt->fetch();
+        }
         $stmt->closeCursor();
-        return $result;
+
+        return $ok;
     }
 
     public function findById(int $id): ?object
     {
-        $stmt = $this->db->prepare("CALL sp_find_article(?);");
-        $stmt->bindValue(1, $id);
-        $stmt->execute();
-
+        $stmt = $this->db->prepare("CALL sp_find_article(:id);");
+        $stmt->execute([':id' => $id]);
         $row = $stmt->fetch();
         $stmt->closeCursor();
 
-        if (!$row) {
-            return null;
-        }
-
-        return $this->hydrate($row);
+        return $row ? $this->hydrate($row) : null;
     }
 
     public function update(object $entity): bool
     {
-        if (!$entity instanceof Article) {
+        if (!$entity instanceof Article) 
+        {
             throw new \InvalidArgumentException("Article expected");
         }
 
-        $stmt = $this->db->prepare("CALL sp_update_article(?, ?, ?, ?, ?, ?, ?, ?, ?);");
-        $stmt->bindValue(1, $entity->getId());
-        $stmt->bindValue(2, $entity->getTitle());
-        $stmt->bindValue(3, $entity->getDescription());
-        $stmt->bindValue(4, $entity->getPublicationDate()->format('Y-m-d'));
-        $stmt->bindValue(5, $entity->getAuthor()->getId());
-        $stmt->bindValue(6, $entity->getDoi());
-        $stmt->bindValue(7, $entity->getAbstract());
-        $stmt->bindValue(8, $entity->getKeywords());
-        $stmt->bindValue(9, $entity->getIndexation());
+        $stmt = $this->db->prepare("CALL sp_update_article(:id, :title, :description, :publicationDate, :authorId, :doi, :abstract, :keywords, :indexation, :magazine, :area);");
+        $ok = $stmt->execute([
+            ':id'              => $entity->getId(),
+            ':title'           => $entity->getTitle(),
+            ':description'     => $entity->getDescription(),
+            ':publicationDate' => $entity->getPublicationDate()->format('Y-m-d'),
+            ':authorId'        => $entity->getAuthor()->getId(),
+            ':doi'             => $entity->getDoi(),
+            ':abstract'        => $entity->getAbstract(),
+            ':keywords'        => $entity->getKeywords(),
+            ':indexation'      => $entity->getIndexation(),
+            ':magazine'        => $entity->getMagazine(),
+            ':area'            => $entity->getArea()
+        ]);
 
-        $result = $stmt->execute();
+        if ($ok) {
+            $stmt->fetch();
+        }
         $stmt->closeCursor();
-        return $result;
+
+        return $ok;
     }
 
     public function delete(int $id): bool
     {
-        $stmt = $this->db->prepare("CALL sp_delete_article(?);");
-        $stmt->bindValue(1, $id);
+        $stmt = $this->db->prepare("CALL sp_delete_article(:id);");
+        $ok = $stmt->execute([':id' => $id]);
 
-        $result = $stmt->execute();
+        if ($ok) {
+            $stmt->fetch();
+        }
         $stmt->closeCursor();
-        return $result;
+
+        return $ok;
     }
 
     public function hydrate(array $row): Article
     {
         $author = new Author(
-            (int)$row['id'],
-            $row['first_name'],
-            $row['last_name'],
-            $row['username'],
-            $row['email'],
-            'temporal', // Placeholder, será reemplazado por Reflection
-            $row['orcid'],
-            $row['affiliation']
+            (int) ($row['id'] ?? 0),
+            $row['first_name'] ?? '',
+            $row['last_name'] ?? '',
+            $row['username'] ?? '',
+            $row['email'] ?? '',
+            'temporal',
+            $row['orcid'] ?? '',
+            $row['affiliation'] ?? ''
         );
 
         if (isset($row['password'])) {
@@ -121,18 +134,20 @@ class ArticleRepository implements RepositoryInterface {
             $property->setValue($author, $row['password']);
         }
 
+        $publicationId = isset($row['publication_id']) ? (int) $row['publication_id'] : 0;
+
         return new Article(
-            (int)$row['publication_id'],
-            $row['title'],
-            $row['description'],
-            new \DateTime($row['publication_date']),
+            $publicationId,
+            $row['title'] ?? '',
+            $row['description'] ?? '',
+            new \DateTime($row['publication_date'] ?? 'now'),
             $author,
-            $row['doi'],
-            $row['abstract'],
-            $row['keywords'],
-            $row['indexation'],
-            $row['magazine'],
-            $row['area']
+            $row['doi'] ?? '',
+            $row['abstract'] ?? '',
+            $row['keywords'] ?? '',
+            $row['indexation'] ?? '',
+            $row['magazine'] ?? '',
+            $row['area'] ?? ''
         );
     }
 }

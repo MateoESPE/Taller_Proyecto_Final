@@ -38,20 +38,20 @@ class BookRepository implements RepositoryInterface{
             throw new \InvalidArgumentException("Book expected");
         }
 
-        $stmt = $this->db->prepare("CALL sp_create_book(:t, :d, :dt, :aid, :i, :g, :ed);");
+        $stmt = $this->db->prepare("CALL sp_create_book(:title, :description, :publicationDate, :authorId, :isbn, :genre, :edition);");
         $ok = $stmt->execute(
             [
-                ':t'   => $entity->getTitle(),
-                ':d'   => $entity->getDescription(),
-                ':dt'  => $entity->getPublicationDate()->format('Y-m-d'),
-                ':aid' => $entity->getAuthor()->getId(),
-                ':i'   => $entity->getIsbn(),
-                ':g'   => $entity->getGenre(),
-                ':ed'  => $entity->getEdition()
+                ':title'           => $entity->getTitle(),
+                ':description'     => $entity->getDescription(),
+                ':publicationDate' => $entity->getPublicationDate()->format('Y-m-d'),
+                ':authorId'        => $entity->getAuthor()->getId(),
+                ':isbn'            => $entity->getIsbn(),
+                ':genre'           => $entity->getGenre(),
+                ':edition'         => $entity->getEdition()
             ]
         );
         if ($ok){
-            $stmt -> fetch();
+            $stmt->fetch();
         }
         $stmt->closeCursor();
         return $ok;
@@ -74,22 +74,22 @@ class BookRepository implements RepositoryInterface{
             throw new \InvalidArgumentException("Book expected");
         }
 
-        $stmt = $this->db->prepare("CALL sp_update_book(:id, :t, :d, :dt, :aid, :i, :g, :ed);");
+        $stmt = $this->db->prepare("CALL sp_update_book(:id, :title, :description, :publicationDate, :authorId, :isbn, :genre, :edition);");
         $ok = $stmt->execute(
             [
-                ':id'  => $entity->getId(), //id del libro
-                ':t'   => $entity->getTitle(),
-                ':d'   => $entity->getDescription(),
-                ':dt'  => $entity->getPublicationDate()->format('Y-m-d'),
-                ':aid' => $entity->getAuthor()->getId(),
-                ':i'   => $entity->getIsbn(),
-                ':g'   => $entity->getGenre(),
-                ':ed'  => $entity->getEdition()
+                ':id'              => $entity->getId(), // id del libro
+                ':title'           => $entity->getTitle(),
+                ':description'     => $entity->getDescription(),
+                ':publicationDate' => $entity->getPublicationDate()->format('Y-m-d'),
+                ':authorId'        => $entity->getAuthor()->getId(),
+                ':isbn'            => $entity->getIsbn(),
+                ':genre'           => $entity->getGenre(),
+                ':edition'         => $entity->getEdition()
             ]
         );
 
         if ($ok){
-            $stmt -> fetch();
+            $stmt->fetch();
         }
         $stmt->closeCursor();
         return $ok;
@@ -101,7 +101,7 @@ class BookRepository implements RepositoryInterface{
         $ok = $stmt->execute([':id' => $id]);
 
         if ($ok){
-            $stmt -> fetch();
+            $stmt->fetch();
         }
         $stmt->closeCursor();
         return $ok;

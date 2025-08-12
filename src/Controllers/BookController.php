@@ -3,7 +3,6 @@
 namespace App\Controllers;
 
 use App\Entities\Book;
-use App\Entities\Author;
 use App\Repositories\BookRepository;
 use App\Repositories\AuthorRepository;
 

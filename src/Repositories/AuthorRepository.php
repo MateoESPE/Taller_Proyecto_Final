@@ -83,6 +83,7 @@ class AuthorRepository implements RepositoryInterface
 
         return $stmt->execute([':id' => $id]);
     }
+    
     //Convierte filas de la base de datos a objetos Author
     private function hydrate(array $row): Author
     {
