@@ -31,11 +31,21 @@ const createBooksPanel = () => {
         model: "App.model.Book",
         autoLoad: true,
         proxy: {
-            type: "ajax",
-            url: "/api/book.php",
+            type: 'ajax',
+            api: {
+                read: '/api/book.php',
+                create: '/api/book.php',
+                update: '/api/book.php',
+                destroy: '/api/book.php'   // <-- Esto es clave
+            },
             reader: {
-                type: "json",
-                rootProperty: "data"
+                type: 'json',
+                rootProperty: 'data'
+            },
+            writer: {
+                type: 'json',
+                writeAllFields: true,
+                rootProperty: 'data'
             }
         }
     });
@@ -47,7 +57,7 @@ const createBooksPanel = () => {
         store: authorStore,
         queryMode: 'local',
         valueField: 'id',
-        displayField: 'fullName', 
+        displayField: 'fullName',
         forceSelection: true,
         allowBlank: false
     };
@@ -136,22 +146,24 @@ const createBooksPanel = () => {
             {
                 text: 'Edit',
                 handler() {
-                    const rec = grid.getSelection()[0];
-                    if (!rec) {
+                    const selection = grid.getSelectionModel().getSelection();
+                    if (!selection || selection.length === 0) {
                         Ext.Msg.alert('Warning', 'Select a book to edit');
                         return;
                     }
-                    openDialog(rec, false);
+                    openDialog(selection[0], false);
                 }
             },
             {
                 text: 'Delete',
                 handler() {
-                    const rec = grid.getSelection()[0];
-                    if (!rec) {
+                    const selection = grid.getSelectionModel().getSelection();
+                    if (!selection || selection.length === 0) {
                         Ext.Msg.alert('Warning', 'Select a book to delete');
                         return;
                     }
+
+                    const rec = selection[0];
 
                     Ext.Msg.confirm('Confirm', 'Delete this book?', btn => {
                         if (btn === 'yes') {
