@@ -47,7 +47,7 @@ const createBooksPanel = () => {
         store: authorStore,
         queryMode: 'local',
         valueField: 'id',
-        displayField: 'last_name', 
+        displayField: 'fullName', 
         forceSelection: true,
         allowBlank: false
     };
