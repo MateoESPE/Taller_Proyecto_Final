@@ -9,13 +9,13 @@ class Estudiante extends Participante
     private int $tiempoDisponibleSemanal;
 
     public function __construct(
-        ?string $id,
+        ?int $id,
         string $nombre,
         string $email,
         string $nivelHabilidad,
         string $grado,
         string $institucion,
-        int $tiempoDisponibleSemanal,
+        int $tiempoDisponibleSemanal
     ) {
         parent::__construct($id, $nombre, $email, $nivelHabilidad);
         $this->grado = $grado;
@@ -23,12 +23,10 @@ class Estudiante extends Participante
         $this->tiempoDisponibleSemanal = $tiempoDisponibleSemanal;
     }
 
-    // Getters
     public function getGrado(): string                  { return $this->grado; }
     public function getInstitucion(): string            { return $this->institucion; }
     public function getTiempoDisponibleSemanal(): int   { return $this->tiempoDisponibleSemanal; }
 
-    // Setters
     public function setGrado(string $grado): void                      { $this->grado = $grado; }
     public function setInstitucion(string $institucion): void          { $this->institucion = $institucion; }
     public function setTiempoDisponibleSemanal(int $tiempo): void      { $this->tiempoDisponibleSemanal = $tiempo; }

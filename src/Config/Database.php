@@ -13,7 +13,7 @@ class Database
         if(self::$instance === null)
         {
             $host     = 'localhost';
-            $dbName   = 'project_db';
+            $dbName   = 'eduhack';
             $username = 'root';
             $password = '';
             $charset  = 'utf8mb4';

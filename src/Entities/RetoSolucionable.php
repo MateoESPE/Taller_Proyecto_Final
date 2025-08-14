@@ -4,14 +4,14 @@ namespace App\Entities;
 
 abstract class RetoSolucionable
 {
-    protected ?string $id;
+    protected ?int $id;
     protected string $titulo;
     protected string $descripcion;
     protected string $complejidad;
     protected array $areasConocimiento;
 
     public function __construct(
-        ?string $id,
+        ?int $id,
         string $titulo,
         string $descripcion,
         string $complejidad,

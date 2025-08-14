@@ -7,7 +7,7 @@ class RetoReal extends RetoSolucionable
     private string $entidadColaboradora;
 
     public function __construct(
-        ?string $id,
+        ?int $id,
         string $titulo,
         string $descripcion,
         string $complejidad,

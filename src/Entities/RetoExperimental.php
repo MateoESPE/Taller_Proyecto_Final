@@ -7,7 +7,7 @@ class RetoExperimental extends RetoSolucionable
     private string $enfoquePedagogico;
 
     public function __construct(
-        ?string $id,
+        ?int $id,
         string $titulo,
         string $descripcion,
         string $complejidad,

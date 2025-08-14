@@ -1,15 +1,26 @@
-Ext.onReady(()=>{
+Ext.onReady(() => {
 
-    const authorsPanel = createAuthorsPanel();
-    const booksPanel =  createBooksPanel();
-    const articlesPanel = createArticlesPanel();
+    // Crear los paneles
+    const estudiantesPanel = createEstudiantesPanel();
+    const mentoresPanel = createMentoresPanel();
+    const equiposPanel = createEquiposPanel();
+    const retosRealesPanel = createRetoRealPanel();
+    const retosSolPanel = createRetoSolucionablePanel();
 
+    // Panel principal con layout card
     const mainCard = Ext.create('Ext.panel.Panel', {
         region: 'center',
         layout: 'card',
-        items: [authorsPanel, booksPanel,articlesPanel],
+        items: [
+            estudiantesPanel,
+            mentoresPanel,
+            equiposPanel,
+            retosRealesPanel,
+            retosSolPanel
+        ],
     });
 
+    // Crear viewport con toolbar
     Ext.create("Ext.container.Viewport", {
         id: "mainViewport",
         layout: "border",
@@ -19,16 +30,24 @@ Ext.onReady(()=>{
                 xtype: 'toolbar',
                 items: [
                     {
-                        text: 'Authors',
-                        handler: ()=>mainCard.getLayout().setActiveItem(authorsPanel),
+                        text: 'Estudiantes',
+                        handler: () => mainCard.getLayout().setActiveItem(estudiantesPanel),
                     },
                     {
-                        text: 'Books',
-                        handler: ()=>mainCard.getLayout().setActiveItem(booksPanel),
+                        text: 'Mentores Técnicos',
+                        handler: () => mainCard.getLayout().setActiveItem(mentoresPanel),
                     },
                     {
-                        text: 'Articles',
-                        handler: ()=>mainCard.getLayout().setActiveItem(articlesPanel),
+                        text: 'Equipos',
+                        handler: () => mainCard.getLayout().setActiveItem(equiposPanel),
+                    },
+                    {
+                        text: 'Retos Reales',
+                        handler: () => mainCard.getLayout().setActiveItem(retosRealesPanel),
+                    },
+                    {
+                        text: 'Retos Solucionables',
+                        handler: () => mainCard.getLayout().setActiveItem(retosSolPanel),
                     }
                 ]
             },

@@ -4,13 +4,13 @@ namespace App\Entities;
 
 abstract class Participante
 {
-    protected ?string $id;
+    protected ?int $id;
     protected string $nombre;
     protected string $email;
     protected string $nivelHabilidad;
 
     public function __construct(
-        ?string $id,
+        ?int $id,
         string $nombre,
         string $email,
         string $nivelHabilidad
@@ -21,7 +21,7 @@ abstract class Participante
         $this->nivelHabilidad = $nivelHabilidad;
     }
 
-    public function getId(): ?string               { return $this->id; }
+    public function getId(): ?int               { return $this->id; }
     public function getNombre(): string            { return $this->nombre; }
     public function getEmail(): string             { return $this->email; }
     public function getNivelHabilidad(): string    { return $this->nivelHabilidad; }
