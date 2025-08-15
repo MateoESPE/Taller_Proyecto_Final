@@ -7,11 +7,11 @@ use App\Repositories\RetoRealRepository;
 
 class RetoRealController
 {
-    private RetoRealRepository $retoRealRepository;
+    private RetoRealRepository $repository;
 
     public function __construct()
     {
-        $this->retoRealRepository = new RetoRealRepository();
+        $this->repository = new RetoRealRepository();
     }
 
     public function handle(): void
@@ -22,31 +22,32 @@ class RetoRealController
 
         if ($method === 'GET') {
             if (isset($_GET['id'])) {
-                $reto = $this->retoRealRepository->findById((int)$_GET['id']);
+                $reto = $this->repository->findById((int)$_GET['id']);
                 echo json_encode($reto ? $this->retoToArray($reto) : null);
+                return;
             } else {
-                $list = array_map([$this, 'retoToArray'], $this->retoRealRepository->findAll());
+                $list = array_map([$this, 'retoToArray'], $this->repository->findAll());
                 echo json_encode($list);
+                return;
             }
-            return;
         }
 
         if ($method === 'POST') {
             $reto = new RetoReal(
-                null,
+                0,
                 $payload['titulo'] ?? '',
                 $payload['descripcion'] ?? '',
                 $payload['complejidad'] ?? '',
                 $payload['areasConocimiento'] ?? [],
                 $payload['entidadColaboradora'] ?? ''
             );
-            echo json_encode(['success' => $this->retoRealRepository->create($reto)]);
+            echo json_encode(['success' => $this->repository->create($reto)]);
             return;
         }
 
         if ($method === 'PUT') {
             $id = (int)($payload['id'] ?? 0);
-            $existing = $this->retoRealRepository->findById($id);
+            $existing = $this->repository->findById($id);
             if (!$existing) {
                 http_response_code(404);
                 echo json_encode(['error' => 'RetoReal not found']);
@@ -59,12 +60,12 @@ class RetoRealController
             if (isset($payload['areasConocimiento'])) $existing->setAreasConocimiento($payload['areasConocimiento']);
             if (isset($payload['entidadColaboradora'])) $existing->setEntidadColaboradora($payload['entidadColaboradora']);
 
-            echo json_encode(['success' => $this->retoRealRepository->update($existing)]);
+            echo json_encode(['success' => $this->repository->update($existing)]);
             return;
         }
 
         if ($method === 'DELETE') {
-            echo json_encode(['success' => $this->retoRealRepository->delete((int)($payload['id'] ?? 0))]);
+            echo json_encode(['success' => $this->repository->delete((int)($payload['id'] ?? 0))]);
             return;
         }
 
